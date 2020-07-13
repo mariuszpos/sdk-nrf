@@ -15,6 +15,8 @@
 #include <logging/log.h>
 #include <dk_buttons_and_leds.h>
 
+#include <usb/usb_device.h>
+
 #include <zboss_api.h>
 #include <zb_mem_config_max.h>
 #include <zb_error_handler.h>
@@ -23,7 +25,7 @@
 
 
 #define RUN_STATUS_LED          DK_LED1
-#define RUN_LED_BLINK_INTERVAL  1000
+#define RUN_LED_BLINK_INTERVAL  1500
 
 
 /* LED indicating that network is opened for new nodes */
@@ -224,6 +226,13 @@ void main(void)
 	zigbee_enable();
 
 	LOG_INF("ZBOSS Coordinator example started\n");
+	
+	int ret;
+	ret = usb_enable(NULL);
+	if (ret != 0) {
+		LOG_ERR("Failed to enable USB");
+		return;
+	}
 
 	while (1) {
 		dk_set_led(RUN_STATUS_LED, (++blink_status) % 2);
